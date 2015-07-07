@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">EasyCollectionViewSample</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_upcoming_movie_list">UpcomingMovieListActivity</string>
+</resources>
