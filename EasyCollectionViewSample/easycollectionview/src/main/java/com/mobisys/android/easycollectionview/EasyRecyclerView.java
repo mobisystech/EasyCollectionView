@@ -4,8 +4,8 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.widget.ListView;
 
 import com.mobisys.android.easycollectionview.exceptions.ModelTypeMismatchException;
 import com.mobisys.android.easycollectionview.exceptions.NoModelDefinedException;
@@ -16,34 +16,27 @@ import java.util.List;
 /**
  * Created by mobisystech on 7/1/15.
  */
-public class EasyListView extends ListView {
+public class EasyRecyclerView extends RecyclerView {
     private Context mContext;
     private String mModelClassName;
     private int mRowLayoutId;
-    private EasyCollectionAdapter mAdapter;
+    private RecyclerViewAdapter mAdapter;
     private HashMap<Integer, OnViewIdClickListener> mViewIdClickListeners;
     private HashMap<Integer, ViewIdBinder> mViewIdBinders;
 
-    public EasyListView(Context context) {
+    public EasyRecyclerView(Context context) {
         super(context);
         this.mContext = context;
     }
 
-    public EasyListView(Context context, AttributeSet attrs) throws NoModelDefinedException {
+    public EasyRecyclerView(Context context, AttributeSet attrs) throws NoModelDefinedException {
         super(context, attrs);
         this.mContext = context;
         initAttrs(context, attrs);
     }
 
-    public EasyListView(Context context, AttributeSet attrs, int defStyleAttr) throws NoModelDefinedException {
+    public EasyRecyclerView(Context context, AttributeSet attrs, int defStyleAttr) throws NoModelDefinedException {
         super(context, attrs, defStyleAttr);
-        this.mContext = context;
-        initAttrs(context, attrs);
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public EasyListView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) throws NoModelDefinedException {
-        super(context, attrs, defStyleAttr, defStyleRes);
         this.mContext = context;
         initAttrs(context, attrs);
     }
@@ -66,7 +59,7 @@ public class EasyListView extends ListView {
                 throw new ModelTypeMismatchException("Model type "+mModelClassName+" does not match with "+arrayList.get(0).getClass().getName());
             }
 
-            mAdapter = new EasyCollectionAdapter(mContext, arrayList, mModelClassName, mRowLayoutId);
+            mAdapter = new RecyclerViewAdapter(mContext, arrayList, mModelClassName, mRowLayoutId);
             mAdapter.setViewIdClickListeners(mViewIdClickListeners);
             setAdapter(mAdapter);
         }

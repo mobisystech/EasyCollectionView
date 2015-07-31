@@ -1,0 +1,16 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.mobisys.android.easycollectionviewsample.MovieRecyclerListActivity">
+
+    <com.mobisys.android.easycollectionview.EasyRecyclerView
+        android:id="@+id/movieList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:modelClass="com.mobisys.android.easycollectionviewsample.model.Movie"
+        app:rowLayout="@layout/row_movie">
+
+    </com.mobisys.android.easycollectionview.EasyRecyclerView>
+
+</RelativeLayout>

@@ -1,11 +1,9 @@
 package com.mobisys.android.easycollectionview;
 
 import android.content.Context;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -21,32 +19,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 /**
- * Created by mahavir on 7/1/15.
+ * Created by priyank on 7/10/15.
  */
-public class EasyCollectionAdapter extends BaseAdapter {
+public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.RecyclerViewHolder> {
     private Context mContext;
     private Class mModelClass;
     private int mRowLayoutId;
+    private List<? extends Object> arrayList;
+    private List<EasyCollectionAdapter.Mapping> methodMapping = new ArrayList<EasyCollectionAdapter.Mapping>();
     private HashMap<Integer, OnViewIdClickListener> mViewIdClickListeners;
     private HashMap<Integer, ViewIdBinder> mViewIdBinders;
 
-    private List<? extends Object> arrayList = new ArrayList<Object>();
-    private List<Mapping> methodMapping = new ArrayList<Mapping>();
-
-    public static class Mapping {
-        public int id;
-        public Method method;
-
-        public Mapping(int id, Method method){
-            this.id = id;
-            this.method = method;
-        }
-    }
-
-    public EasyCollectionAdapter(Context context, List<? extends Object> objects, String modelClassName, int rowLayoutId){
+    public RecyclerViewAdapter(Context context, List<? extends Object> objects, String modelClassName, int rowLayoutId){
         this.mContext = context;
         this.mRowLayoutId = rowLayoutId;
         this.arrayList = objects;
@@ -57,13 +43,13 @@ public class EasyCollectionAdapter extends BaseAdapter {
     private void initMethods(String modelClassName){
         try {
             mModelClass = Class.forName(modelClassName);
-            methodMapping = new ArrayList<Mapping>();
+            methodMapping = new ArrayList<EasyCollectionAdapter.Mapping>();
 
             List<Method> methods = ReflectionUtils.getFieldsUpTo(mModelClass, Object.class);
             for (int i=0;i<methods.size();i++){
                 ViewId viewId = methods.get(i).getAnnotation(ViewId.class);
                 if (viewId !=null){
-                    Mapping mapping = new Mapping(viewId.id(), methods.get(i));
+                    EasyCollectionAdapter.Mapping mapping = new EasyCollectionAdapter.Mapping(viewId.id(), methods.get(i));
                     methodMapping.add(mapping);
                 }
             }
@@ -73,28 +59,14 @@ public class EasyCollectionAdapter extends BaseAdapter {
     }
 
     @Override
-    public int getCount() {
-        return arrayList.size();
+    public RecyclerViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+        View rowView = View.inflate(mContext, mRowLayoutId, null);
+        return new RecyclerViewHolder(rowView);
     }
 
     @Override
-    public Object getItem(int position) {
-        return arrayList.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
-        if (convertView == null) {
-            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(mRowLayoutId, parent, false);
-        }
-
-        final View rowView = convertView;
+    public void onBindViewHolder(RecyclerViewHolder recyclerViewHolder, final int position) {
+        final View convertView = recyclerViewHolder.rowView;
         for (int i=0; i<methodMapping.size(); i++){
             Method method = methodMapping.get(i).method;
             int id = methodMapping.get(i).id;
@@ -125,7 +97,7 @@ public class EasyCollectionAdapter extends BaseAdapter {
                             @Override
                             public void onClick(View view) {
                                 OnViewIdClickListener listener = mViewIdClickListeners.get(viewId);
-                                listener.onViewIdClickListener(position, view, rowView);
+                                listener.onViewIdClickListener(position, view, convertView);
                             }
                         });
                     }
@@ -137,7 +109,7 @@ public class EasyCollectionAdapter extends BaseAdapter {
                         final int viewId = keys.next();
                         View rowViewId = convertView.findViewById(viewId);
                         ViewIdBinder viewIdBinder = mViewIdBinders.get(viewId);
-                        viewIdBinder.bindViewId(position, rowViewId, rowView);
+                        viewIdBinder.bindViewId(position, rowViewId, convertView);
                     }
                 }
 
@@ -148,8 +120,6 @@ public class EasyCollectionAdapter extends BaseAdapter {
             }
 
         }
-
-        return convertView;
     }
 
     public void setViewIdClickListeners(HashMap<Integer, OnViewIdClickListener> viewIdClickListeners){
@@ -158,5 +128,19 @@ public class EasyCollectionAdapter extends BaseAdapter {
 
     public void setViewIdBinders(HashMap<Integer, ViewIdBinder> viewIdBinders){
         mViewIdBinders = viewIdBinders;
+    }
+
+    @Override
+    public int getItemCount() {
+        return arrayList.size();
+    }
+
+    public class RecyclerViewHolder extends RecyclerView.ViewHolder {
+
+        public View rowView;
+        public RecyclerViewHolder(View itemView) {
+            super(itemView);
+            this.rowView = itemView;
+        }
     }
 }

@@ -1,4 +1,14 @@
+repositories {
+    mavenCentral()
+}
+
 apply plugin: 'com.android.library'
+//apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
+
+group = 'com.mobisys.android'
+version = '1.1'
+def gitHubUrl = 'https://github.com/mobisystech/EasyCollectionView.git'
 
 android {
     compileSdkVersion 22
@@ -18,7 +28,52 @@ android {
     }
 }
 
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+
+    configurations = ['archives'] //When uploading configuration files
+    pkg {
+        repo = 'maven'
+        name = 'easycollectionview'
+        desc = 'An EasyListView, EasyGridView & EasyRecyclerView for Android'
+        websiteUrl = gitHubUrl
+        issueTrackerUrl = gitHubUrl
+        vcsUrl = gitHubUrl
+        licenses = ['Apache-2.0']
+        labels = ['aar', 'android', 'easylistview', 'easygridview', 'easyrecyclerview']
+        publicDownloadNumbers = true
+        version {
+            name = '1.0'
+            vcsTag = '1.0'
+        }
+    }
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.2.0'
+    compile 'com.android.support:recyclerview-v7:22.2.0'
+
 }

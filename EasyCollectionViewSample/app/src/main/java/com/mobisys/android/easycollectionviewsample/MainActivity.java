@@ -23,7 +23,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String[] mOptions = {"Upcoming Movies", "Give your rating to upcoming movies"};
+    private String[] mOptions = {"Upcoming Movies ListView", "Upcoming Movie RecyclerView"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +37,9 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 if (position==0){
                     Intent intent = new Intent(MainActivity.this, UpcomingMovieListActivity.class);
+                    startActivity(intent);
+                } else if (position==1){
+                    Intent intent = new Intent(MainActivity.this, MovieRecyclerListActivity.class);
                     startActivity(intent);
                 }
             }

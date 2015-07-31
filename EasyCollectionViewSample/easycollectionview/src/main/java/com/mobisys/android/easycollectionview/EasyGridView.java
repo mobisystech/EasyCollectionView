@@ -21,7 +21,6 @@ public class EasyGridView extends GridView {
     private Context mContext;
     private String mModelClassName;
     private int mRowLayoutId;
-    private String mViewIdClickMethodName;
     private EasyCollectionAdapter mAdapter;
     private HashMap<Integer, OnViewIdClickListener> mViewIdClickListeners;
     private HashMap<Integer, ViewIdBinder> mViewIdBinders;
@@ -55,7 +54,6 @@ public class EasyGridView extends GridView {
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.EasyCollectionView);
             mModelClassName = a.getString(R.styleable.EasyCollectionView_modelClass);
             mRowLayoutId = a.getResourceId(R.styleable.EasyCollectionView_rowLayout, android.R.layout.simple_dropdown_item_1line);
-            mViewIdClickMethodName = a.getString(R.styleable.EasyCollectionView_viewIdClick);
         }
 
         if (mModelClassName == null) {
@@ -69,7 +67,7 @@ public class EasyGridView extends GridView {
                 throw new ModelTypeMismatchException("Model type "+mModelClassName+" does not match with "+arrayList.get(0).getClass().getName());
             }
 
-            mAdapter = new EasyCollectionAdapter(mContext, arrayList, mModelClassName, mRowLayoutId, mViewIdClickMethodName);
+            mAdapter = new EasyCollectionAdapter(mContext, arrayList, mModelClassName, mRowLayoutId);
             mAdapter.setViewIdClickListeners(mViewIdClickListeners);
             setAdapter(mAdapter);
         }
